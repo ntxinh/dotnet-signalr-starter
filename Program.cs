@@ -22,23 +22,22 @@ builder.Services.AddDbContext<NewsContext>(options =>
     ServiceLifetime.Singleton
 );
 
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy("AllowMyOrigins",
-//         builder =>
-//         {
-//             builder
-//                 .AllowCredentials()
-//                 .AllowAnyHeader()
-//                 .SetIsOriginAllowedToAllowWildcardSubdomains()
-//                 .AllowAnyMethod()
-//                 .WithOrigins(
-//                     "https://localhost:44311",
-//                     "https://localhost:44390",
-//                     "https://localhost:44395",
-//                     "https://localhost:5001");
-//         });
-// });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowMyOrigins",
+        builder =>
+        {
+            builder
+                .AllowCredentials()
+                .AllowAnyHeader()
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
+                .AllowAnyMethod()
+                .WithOrigins(
+                    "http://localhost:4200"
+                    // "http://localhost:5000"
+                );
+        });
+});
 
 // END: My Code
 
@@ -56,12 +55,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 // START: My Code
-app.MapHub<NewsHub>("/looney");
-// app.UseCors("AllowMyOrigins");
-app.UseCors(x => x
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
+app.MapHub<NewsHub>(HubRoutes.News);
+app.UseCors("AllowMyOrigins");
 // END: My Code
 
 app.Run();

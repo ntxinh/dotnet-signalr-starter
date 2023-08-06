@@ -20,7 +20,7 @@ public class NewsHub : Hub
         }
 
         _newsStore.CreateNewItem(newsItem);
-        return Clients.Group(newsItem.NewsGroup).SendAsync("Send", newsItem);
+        return Clients.Group(newsItem.NewsGroup).SendAsync(NewsHubActions.Send, newsItem);
     }
 
     public async Task JoinGroup(string groupName)
@@ -31,10 +31,10 @@ public class NewsHub : Hub
         }
 
         await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-        await Clients.Group(groupName).SendAsync("JoinGroup", groupName);
+        await Clients.Group(groupName).SendAsync(NewsHubActions.JoinGroup, groupName);
 
         var history = _newsStore.GetAllNewsItems(groupName);
-        await Clients.Client(Context.ConnectionId).SendAsync("History", history);
+        await Clients.Client(Context.ConnectionId).SendAsync(NewsHubActions.History, history);
     }
 
     public async Task LeaveGroup(string groupName)
@@ -44,7 +44,7 @@ public class NewsHub : Hub
             throw new Exception("cannot leave a group which does not exist.");
         }
 
-        await Clients.Group(groupName).SendAsync("LeaveGroup", groupName);
+        await Clients.Group(groupName).SendAsync(NewsHubActions.LeaveGroup, groupName);
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
     }
 }

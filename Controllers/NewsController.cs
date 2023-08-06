@@ -5,18 +5,39 @@ using dotnet_signalr_starter.Providers;
 namespace dotnet_signalr_starter.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("api/[controller]")]
 public class NewsController : ControllerBase
 {
-    private readonly NewsContext _newsContext;
-    public NewsController(NewsContext newsContext)
+    // private readonly NewsContext _newsContext;
+    private readonly NewsStore _newsStore;
+    public NewsController(NewsContext newsContext, NewsStore newsStore)
     {
-        _newsContext = newsContext;
+        // _newsContext = newsContext;
+        _newsStore = newsStore;
+    }
+
+    // [HttpGet]
+    // public IEnumerable<NewsItemEntity> Get()
+    // {
+    //     return _newsContext.NewsItemEntities.ToList();
+    // }
+
+    [HttpPost]
+    public IActionResult AddGroup([FromQuery] string group)
+    {
+        if (string.IsNullOrEmpty(group))
+        {
+            return BadRequest();
+        }
+
+        _newsStore.AddGroup(group);
+
+        return Created("AddGroup", group);
     }
 
     [HttpGet]
-    public IEnumerable<NewsItemEntity> Get()
+    public List<string> GetAllGroups()
     {
-        return _newsContext.NewsItemEntities.ToList();
+        return _newsStore.GetAllGroups();
     }
 }

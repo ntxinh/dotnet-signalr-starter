@@ -64,6 +64,6 @@ public class NewsStore
 
     public List<string> GetAllGroups()
     {
-        return _newsContext.NewsGroups.Select(t =>  t.Name ).ToList();
+        return _newsContext.NewsGroups.Select(t => t.Name ).ToList();
     }
 }
